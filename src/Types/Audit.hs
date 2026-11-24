@@ -31,7 +31,7 @@ import Data.Time (UTCTime)
 import qualified Data.Text as Text
 import GHC.Generics (Generic)
 import Types.Identity (Fingerprint, Identity, KeyRevocation)
-import Types.Shared (DarDigest, ProviderId, WithJsonOptions (..), jsonOptions)
+import Types.Shared (DarDigest, ProviderId, SourceDigest, WithJsonOptions (..), jsonOptions)
 
 -- | The @audit-id@ of a report, a UUID. A revocation names the report that it
 -- revokes by its audit-id.
@@ -120,14 +120,17 @@ isGitRevision text =
   (Text.length text == 40 || Text.length text == 64)
     && Text.all (\character -> isDigit character || (isAsciiLower character && character <= 'f')) text
 
--- | The source code of the audited package: whether it is closed, and
--- optionally the URL of its git repository with the revision that was
--- audited. 'parseJSON' rejects a @url@ without a @rev@ and a @rev@ without a
--- @url@.
+-- | The source code of the audited package: the digest of the source that was
+-- audited, whether it is closed, and optionally the URL of its git repository
+-- with the revision that was audited. 'parseJSON' rejects a @url@ without a
+-- @rev@ and a @rev@ without a @url@.
 data Source = Source
   { closed :: Bool
   , url :: Maybe Text
   , rev :: Maybe GitRevision
+  , -- | The digest of the source that the auditor read, which binds the report
+    -- to the audited source whether or not the source is published.
+    hash :: SourceDigest
   }
   deriving stock (Generic, Eq, Show)
   deriving (ToJSON) via WithJsonOptions Source
