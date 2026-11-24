@@ -1,0 +1,4 @@
+packages: .
+
+-- As in dpm-registry, whose GHC 9.14 package set this was extracted with.
+allow-newer: *:*

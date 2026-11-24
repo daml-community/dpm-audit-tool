@@ -1,0 +1,53 @@
+cabal-version:      3.14
+name:               dpm-registry-audit
+version:            0.1.0.0
+synopsis:           Check the audits of a DAR in a checkout of the identity repository
+license:            Apache-2.0
+license-file:       LICENSE
+author:             Adriaan Leijnse
+maintainer:         adriaan.leijnse@obsidian.systems
+build-type:         Simple
+
+common shared
+    ghc-options:      -Wall
+    default-language: GHC2024
+    default-extensions:
+        DuplicateRecordFields
+        OverloadedRecordDot
+        OverloadedStrings
+    build-depends:    base ^>=4.22.0.0
+
+library
+    import:           shared
+    hs-source-dirs:   src
+    exposed-modules:  Audit
+                    , Command
+                    , Dar
+                    , DAR.Inspect
+                    , IdentityRepository
+                    , Signature
+                    , Types.Audit
+                    , Types.Identity
+                    , Types.Shared
+    build-depends:    aeson
+                    , aeson-pretty
+                    , bytestring
+                    , containers
+                    , crypton
+                    , directory
+                    , filepath
+                    , temporary
+                    , text
+                    , time
+                    , transformers
+                    , typed-process
+
+executable dpm-registry-audit
+    import:           shared
+    hs-source-dirs:   app
+    main-is:          Main.hs
+    ghc-options:      -threaded
+    build-depends:    dpm-registry-audit
+                    , directory
+                    , optparse-applicative
+                    , text
